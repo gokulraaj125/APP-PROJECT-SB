@@ -1,0 +1,25 @@
+# Blueprint for the Flask API only - the React client is hosted on Vercel.
+#
+# Render -> New -> Blueprint -> pick this repo -> branch 1st-review(tix-booking).
+# Everything below is applied automatically, so there are no dashboard fields to
+# get wrong (a Node runtime or an empty root directory makes Render look for a
+# package.json at the repo root and fail).
+#
+# After it deploys, set VITE_API_URL in Vercel to this service's URL and redeploy
+# there - the client bakes that value in at build time.
+services:
+  - type: web
+    name: epic-tn-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 60
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.10"
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: CORS_ORIGINS
+        value: "https://app-project-eight-cyan.vercel.app"
